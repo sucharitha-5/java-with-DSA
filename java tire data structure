@@ -1,0 +1,115 @@
+import java.util.HashMap;
+
+class TrieNode {
+    HashMap<Character, TrieNode> children;
+    boolean isEndOfWord;
+
+    TrieNode() {
+        children = new HashMap<>();
+        isEndOfWord = false;
+    }
+}
+
+public class TrieDataStructure {
+
+    private TrieNode root;
+
+    TrieDataStructure() {
+        root = new TrieNode();
+    }
+
+    // Insert word into Trie
+    public void insert(String word) {
+
+        TrieNode current = root;
+
+        for (char ch : word.toCharArray()) {
+
+            if (!current.children.containsKey(ch)) {
+                current.children.put(ch, new TrieNode());
+            }
+
+            current = current.children.get(ch);
+        }
+
+        current.isEndOfWord = true;
+    }
+
+    // Search complete word
+    public boolean search(String word) {
+
+        TrieNode current = root;
+
+        for (char ch : word.toCharArray()) {
+
+            if (!current.children.containsKey(ch)) {
+                return false;
+            }
+
+            current = current.children.get(ch);
+        }
+
+        return current.isEndOfWord;
+    }
+
+    // Check prefix exists
+    public boolean startsWith(String prefix) {
+
+        TrieNode current = root;
+
+        for (char ch : prefix.toCharArray()) {
+
+            if (!current.children.containsKey(ch)) {
+                return false;
+            }
+
+            current = current.children.get(ch);
+        }
+
+        return true;
+    }
+
+    // Display all words
+    public void displayWords() {
+        display(root, "");
+    }
+
+    private void display(TrieNode node, String word) {
+
+        if (node.isEndOfWord) {
+            System.out.println(word);
+        }
+
+        for (char ch : node.children.keySet()) {
+            display(node.children.get(ch), word + ch);
+        }
+    }
+
+
+    public static void main(String[] args) {
+
+        TrieDataStructure trie = new TrieDataStructure();
+
+        // Adding words
+        trie.insert("java");
+        trie.insert("javascript");
+        trie.insert("python");
+        trie.insert("programming");
+        trie.insert("developer");
+        trie.insert("data");
+
+        System.out.println("Search Results:");
+
+        System.out.println("java -> " + trie.search("java"));
+        System.out.println("python -> " + trie.search("python"));
+        System.out.println("jav -> " + trie.search("jav"));
+
+        System.out.println("\nPrefix Search:");
+
+        System.out.println("Prefix 'dev' -> " + trie.startsWith("dev"));
+        System.out.println("Prefix 'app' -> " + trie.startsWith("app"));
+
+        System.out.println("\nWords Stored in Trie:");
+        trie.displayWords();
+    }
+}
