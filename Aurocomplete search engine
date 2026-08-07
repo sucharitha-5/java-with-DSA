@@ -1,0 +1,78 @@
+import java.util.*;
+
+class TrieNode {
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isEndOfWord = false;
+}
+
+class Trie {
+    private final TrieNode root = new TrieNode();
+
+    // Insert a word
+    public void insert(String word) {
+        TrieNode current = root;
+
+        for (char ch : word.toCharArray()) {
+            current.children.putIfAbsent(ch, new TrieNode());
+            current = current.children.get(ch);
+        }
+
+        current.isEndOfWord = true;
+    }
+
+    // Return all words with given prefix
+    public List<String> autocomplete(String prefix) {
+
+        TrieNode current = root;
+
+        for (char ch : prefix.toCharArray()) {
+            if (!current.children.containsKey(ch))
+                return new ArrayList<>();
+
+            current = current.children.get(ch);
+        }
+
+        List<String> suggestions = new ArrayList<>();
+        dfs(current, prefix, suggestions);
+
+        return suggestions;
+    }
+
+    private void dfs(TrieNode node, String word, List<String> result) {
+
+        if (node.isEndOfWord)
+            result.add(word);
+
+        for (Map.Entry<Character, TrieNode> entry : node.children.entrySet()) {
+            dfs(entry.getValue(), word + entry.getKey(), result);
+        }
+    }
+}
+
+public class AutocompleteSearchEngine {
+
+    public static void main(String[] args) {
+
+        Trie trie = new Trie();
+
+        String[] dictionary = {
+                "apple",
+                "application",
+                "apply",
+                "aptitude",
+                "banana",
+                "ball",
+                "bat",
+                "battle",
+                "cat",
+                "camera",
+                "camel",
+                "coding",
+                "code",
+                "coder",
+                "computer",
+                "company"
+        };
+
+        for (String word : dictionary)
+            trie.insert
